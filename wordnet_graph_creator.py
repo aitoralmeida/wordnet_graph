@@ -57,7 +57,7 @@ def build_graphs():
     return G_hypo, G_mero, G_holo, G_complete
     
 def write_graphs(G_hypo, G_mero, G_holo, G_complete):
-    print "Writing graphs..."
+    print "Writing graphs:"
     print "  - hyponyms"            
     nx.write_gexf(G_hypo, 'wordnet_hyponyms.gexf')
     print "  - meronyms"  
@@ -69,12 +69,16 @@ def write_graphs(G_hypo, G_mero, G_holo, G_complete):
     print "...done"
     
     
-def get_statistics(G):
+def get_centralities(G):
     
     centralities = {}
-    centralities['eigenvector'] = nx.eigenvector_centrality(G)
+    print "     - eigenvector"
+    centralities['eigenvector'] = nx.eigenvector_centrality(G, tol=1.0e-4)
+    print "     - degree"    
     centralities['degree'] = nx.degree_centrality(G)
+    print "     - betweenness"    
     centralities['betweenness'] = nx.betweenness_centrality(G)
+    print "     - closeness"    
     centralities['closeness'] = nx.closeness_centrality(G)
     
     for cent in centralities:
@@ -86,10 +90,15 @@ def get_statistics(G):
     
 if __name__=='__main__':
     G_hypo, G_mero, G_holo, G_complete = build_graphs()
-    G_hypo = get_statistics(G_hypo)
-    G_mero = get_statistics(G_mero)
-    G_holo = get_statistics(G_holo)
-    G_complete = get_statistics(G_complete)
+    print "Calculating centralities:" 
+    print "  - hyponyms"   
+    G_hypo = get_centralities(G_hypo)
+    print "  - meronyms"  
+    G_mero = get_centralities(G_mero)
+    print "  - holonyms"  
+    G_holo = get_centralities(G_holo)
+    print "  - complete"  
+    G_complete = get_centralities(G_complete)
     write_graphs(G_hypo, G_mero, G_holo, G_complete)
     
     
